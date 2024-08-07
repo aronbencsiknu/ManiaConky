@@ -1,0 +1,72 @@
+conky.config = {
+    update_interval = 0.5,
+    double_buffer = true,
+    no_buffers = true,
+    text_buffer_size = 2048,
+    own_window = true,
+    own_window_transparent = false,
+    own_window_colour = '0033FF',
+    own_window_type = 'desktop',
+    own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+    border_inner_margin = 10,
+    border_outer_margin = 5,
+    alignment = 'top_right',
+    gap_x = 40,
+    gap_y = 40,
+    own_window_argb_visual = true,
+    own_window_argb_value = 150,
+    own_window_type = 'desktop',
+    use_xft = true,
+    font = 'Perfect DOS VGA 437:size=10',
+    xftalpha = 0.8,
+    default_color = 'fcacba',
+    draw_shades = false,
+    draw_outline = false,
+    draw_borders = false,
+    draw_graph_borders = true,
+    background = false,
+    minimum_width = 250,
+    maximum_width = 250,
+};
+
+conky.text = [[
+${font Perfect DOS VGA 437:size=12}SYSTEM INFORMATION${color}${font}${voffset 2}
+${execi 86400 lsb_release -d | sed 's/^Description:\s*//'} ${execi 86400 lsb_release -c | sed 's/^Codename:\s*//'}
+$kernel
+${font Perfect DOS VGA 437:size=3}${hr}
+${hr}${font}
+${font}CPU Usage:${color}
+${cpu cpu}% (${freq_g} GHz)
+${cpubar 10,200}
+${cpugraph 30,200 0033FF fcacba}   
+${hr}
+${font}GPU Usage:${color}
+${execi 1 nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader}
+${execbar 10,200 nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader}
+${hr}
+${font}Memory Usage:${color}
+${mem} / ${memmax} (${memperc}%)
+${membar 10,200}
+${hr}
+${font}Disk Usage:${color}
+Root: ${fs_used /} / ${fs_size /} (${fs_used_perc /}%)
+${fs_bar 10,200 /}
+Home: ${fs_used /home} / ${fs_size /home} (${fs_used_perc /home}%)
+${fs_bar 10,200 /home}
+${hr}
+${font}Network Activity:${color}
+Up: ${upspeedf wlp2s0} kB/s ${alignr}Down: ${downspeedf wlp2s0} kB/s
+${upspeedgraph wlp2s0 20,100 0033FF fcacba} ${alignr}${downspeedgraph wlp2s0 20,100 0033FF fcacba}
+T.Up: ${totalup wlp2s0} ${alignr}T.Down: ${totaldown wlp2s0}
+${hr}
+${font}Battery Status:${color}
+${battery_short BAT0}
+${battery_bar 10,200 BAT0}
+${hr}
+${font}Temperatures:${color}
+CPU: ${execi 1 sensors | grep 'Tctl:' | awk '{print int($2)}'| sed 's/^+//'} C
+GPU: ${exec nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader} C
+${hr}
+${font}System Uptime:${color}
+${uptime}
+]];
